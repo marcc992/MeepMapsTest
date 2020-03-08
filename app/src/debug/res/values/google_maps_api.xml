@@ -1,0 +1,7 @@
+<resources>
+    <!--
+    New key without restrictions: AIzaSyB1MNPY1XTaOr7awtcLqaQYwOlRq3QjqQQ
+    New key WITH Restrictions: AIzaSyBbwmK4gLrgoMV2TBdVemwu2kp93CDuQoQ
+    -->
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyB1MNPY1XTaOr7awtcLqaQYwOlRq3QjqQQ</string>
+</resources>

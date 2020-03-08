@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">MeepMapTest</string>
+
+    <string name="welcome_layout_text_welcome">Welcome to</string>
+    <string name="welcome_layout_content_description_icon_transport">Illustrate icon in the Welcome Screen</string>
+    <string name="welcome_layout_button_start">Start</string>
+    <string name="title_activity_maps">Map of services</string>
+
+</resources>
