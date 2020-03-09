@@ -24,6 +24,7 @@ public class WelcomeActivity extends AppCompatActivity implements WelcomeView {
 
     @Override
     public void navigateToMaps() {
+        // TODO: Get all permissions
         startActivity(new Intent(this, MapsActivity.class));
         finish();
     }

@@ -1,4 +1,4 @@
-package es.marcmauri.meepmaptest.models;
+package es.marcmauri.meepmaptest.model.beans;
 
 import com.google.gson.annotations.SerializedName;
 

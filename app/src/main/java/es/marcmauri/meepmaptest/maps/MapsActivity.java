@@ -5,21 +5,21 @@ import androidx.fragment.app.FragmentActivity;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.clustering.ClusterManager;
 
 import es.marcmauri.meepmaptest.R;
 import es.marcmauri.meepmaptest.databinding.ActivityMapsBinding;
+import es.marcmauri.meepmaptest.model.beans.BeanResourceMarker;
 
 public class MapsActivity extends FragmentActivity implements MapsView, OnMapReadyCallback {
 
     private ActivityMapsBinding binding;
     private MapsPresenter presenter;
     private GoogleMap mMap;
+    private ClusterManager<BeanResourceMarker> mClusterManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,9 +31,14 @@ public class MapsActivity extends FragmentActivity implements MapsView, OnMapRea
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
 
-        mapFragment.getMapAsync(this);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+        } else {
+            Toast.makeText(this, "Error with mapFragment", Toast.LENGTH_SHORT).show();
+        }
 
         presenter = new MapsPresenter(this, new MapsInteractor());
+        binding.fabShowAll.setOnClickListener(v -> presenter.showAllMarkers());
     }
 
 
@@ -49,7 +54,14 @@ public class MapsActivity extends FragmentActivity implements MapsView, OnMapRea
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        presenter.showFirstMarker(mMap);
+        // Initialize the manager with the context and the map.
+        mClusterManager = new ClusterManager<>(this, mMap);
+        presenter.configureGoogleMap(mMap, mClusterManager);
+    }
+
+    @Override
+    public void showAllMarkers() {
+        presenter.showAllMarkers();
     }
 
     @Override
@@ -59,12 +71,17 @@ public class MapsActivity extends FragmentActivity implements MapsView, OnMapRea
 
     @Override
     public void showBusMarkers() {
-        presenter.getAndShowBusMarkers();
+        //presenter.getAndShowBusMarkers();
     }
 
     @Override
     public void showTrainMarkers() {
-        presenter.getAndShowTrainMarkers();
+        //presenter.getAndShowTrainMarkers();
+    }
 
+    @Override
+    public void onDetachedFromWindow() {
+        presenter.onDestroy();
+        super.onDetachedFromWindow();
     }
 }

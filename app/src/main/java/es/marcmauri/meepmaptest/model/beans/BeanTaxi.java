@@ -1,8 +1,8 @@
-package es.marcmauri.meepmaptest.models;
+package es.marcmauri.meepmaptest.model.beans;
 
 import com.google.gson.annotations.SerializedName;
 
-public class BeanServerObject {
+public class BeanTaxi {
 
     @SerializedName("id")
     String id;
@@ -13,15 +13,6 @@ public class BeanServerObject {
     @SerializedName("y")
     double y;
 
-    @SerializedName("scheduledArrival")
-    int  scheduledArrival;
-    @SerializedName("locationType")
-    int  locationType;
-    @SerializedName("lat")
-    double lat;
-    @SerializedName("lon")
-    double lon;
-
     @SerializedName("licencePlate")
     String licencePlate;
     @SerializedName("range")
@@ -30,36 +21,24 @@ public class BeanServerObject {
     int batteryLevel;
     @SerializedName("seats")
     int seats;
-    @SerializedName("helmets")
-    int helmets;
     @SerializedName("model")
     String model;
     @SerializedName("resourceImageId")
     String resourceImageId;
 
-    @SerializedName("station")
-    boolean station;
-    @SerializedName("availableResources")
-    int availableResources;
-    @SerializedName("spacesAvailable")
-    int spacesAvailable;
-    @SerializedName("allowDropoff")
-    boolean allowDropoff;
-    @SerializedName("bikesAvailable")
-    int bikesAvailable;
-
     @SerializedName("pricePerMinuteParking")
     double pricePerMinuteParking;
     @SerializedName("pricePerMinuteDriving")
     double pricePerMinuteDriving;
-    @SerializedName("engineType")
-    String engineType;
 
-    @SerializedName("resourceType")
-    String resourceType;
     @SerializedName("realTimeData")
     boolean realTimeData;
+    @SerializedName("engineType")
+    String engineType;
+    @SerializedName("resourceType")
+    String resourceType;
 
     @SerializedName("companyZoneId")
     int  companyZoneId;
+    // companyZoneId = 545 => Taxi?
 }

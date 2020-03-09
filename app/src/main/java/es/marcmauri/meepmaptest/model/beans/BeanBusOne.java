@@ -1,8 +1,8 @@
-package es.marcmauri.meepmaptest.models;
+package es.marcmauri.meepmaptest.model.beans;
 
 import com.google.gson.annotations.SerializedName;
 
-public class BeanBusThree {
+public class BeanBusOne {
 
     @SerializedName("id")
     String id;
@@ -18,7 +18,7 @@ public class BeanBusThree {
     int  locationType;
     @SerializedName("companyZoneId")
     int  companyZoneId;
-    // companyZoneId = 382
+    // companyZoneId = 402
     @SerializedName("lat")
     double lat;
     @SerializedName("lon")
