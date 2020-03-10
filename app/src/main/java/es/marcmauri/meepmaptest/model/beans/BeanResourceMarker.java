@@ -13,7 +13,7 @@ public class BeanResourceMarker implements ClusterItem {
 
     public BeanResourceMarker(String id, double lat, double lng, String name, String description, int companyZoneId) {
         this.id = id;
-        position = new LatLng(lat,lng);
+        position = new LatLng(lat, lng);
         this.name = name;
         this.description = description;
         this.companyZoneId = companyZoneId;

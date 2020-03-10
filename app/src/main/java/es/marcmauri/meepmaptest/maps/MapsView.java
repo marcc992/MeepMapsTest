@@ -1,12 +1,16 @@
 package es.marcmauri.meepmaptest.maps;
 
 public interface MapsView {
+    void showProgress();
+
+    void hideProgress();
+
     void showError(String error);
 
-    void showAllMarkers();
+    //void showAllMarkers();
 
-    void showBusMarkers();
+    //void showBusMarkers();
 
-    void showTrainMarkers();
+    //void showTrainMarkers();
 
 }

@@ -1,9 +1,10 @@
 package es.marcmauri.meepmaptest.maps;
 
-import androidx.fragment.app.FragmentActivity;
-
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
+
+import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -38,7 +39,13 @@ public class MapsActivity extends FragmentActivity implements MapsView, OnMapRea
         }
 
         presenter = new MapsPresenter(this, new MapsInteractor());
-        binding.fabShowAll.setOnClickListener(v -> presenter.showAllMarkers());
+        binding.fabRefreshData.setOnClickListener(v -> showAllMarkers());
+    }
+
+    @Override
+    protected void onDestroy() {
+        presenter.onDestroy();
+        super.onDestroy();
     }
 
 
@@ -57,11 +64,19 @@ public class MapsActivity extends FragmentActivity implements MapsView, OnMapRea
         // Initialize the manager with the context and the map.
         mClusterManager = new ClusterManager<>(this, mMap);
         presenter.configureGoogleMap(mMap, mClusterManager);
+
+        // Technical test: Main behavior
+        showAllMarkers();
     }
 
     @Override
-    public void showAllMarkers() {
-        presenter.showAllMarkers();
+    public void showProgress() {
+        binding.progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgress() {
+        binding.progressBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -69,19 +84,12 @@ public class MapsActivity extends FragmentActivity implements MapsView, OnMapRea
         Toast.makeText(this, error, Toast.LENGTH_LONG).show();
     }
 
-    @Override
-    public void showBusMarkers() {
-        //presenter.getAndShowBusMarkers();
+    private void toast(String text) {
+        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void showTrainMarkers() {
-        //presenter.getAndShowTrainMarkers();
-    }
-
-    @Override
-    public void onDetachedFromWindow() {
-        presenter.onDestroy();
-        super.onDetachedFromWindow();
+    private void showAllMarkers() {
+        //TODO: Rellenar esto
+        presenter.showAllMarkers();
     }
 }

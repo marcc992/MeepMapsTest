@@ -1,36 +1,40 @@
 package es.marcmauri.meepmaptest.maps;
 
-import es.marcmauri.meepmaptest.model.services.API;
-import es.marcmauri.meepmaptest.model.services.ApiServices.ResourcesService;
-import retrofit2.Call;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.List;
 
-import es.marcmauri.meepmaptest.model.beans.BeanApiResource;
+import es.marcmauri.meepmaptest.model.beans.BeanResource;
+import es.marcmauri.meepmaptest.model.services.API;
+import es.marcmauri.meepmaptest.model.services.ApiServices.ResourcesService;
+import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MapsInteractor {
 
     private ResourcesService service = API.getResourcesServicesApi().create(ResourcesService.class);
-    private Call<List<BeanApiResource>> resourcesCall;
+    private Call<List<BeanResource>> allResourcesCall;
 
     interface OnMapListener {
         void onFetchingDataError(String error);
-        void onFetchingAllDataSuccess(List<BeanApiResource> serverObjects);
+
+        void onFetchingAllResourcesSuccess(List<BeanResource> resourceList);
     }
 
+    private String getLatLngString(LatLng location) {
+        return String.valueOf(location.latitude) + ',' + location.longitude;
+    }
 
-    public void getAllServerData(final OnMapListener listener) {
-
-        resourcesCall = service.getResourcesByCity("lisboa", "38.711046,-9.160096", "38.739429,-9.137115");
-        resourcesCall.enqueue(new Callback<List<BeanApiResource>>() {
+    public void getAllServerData(String city, LatLng lowerLeft, LatLng upperRight, final OnMapListener listener) {
+        allResourcesCall = service.getAllResourcesByCity(city, getLatLngString(lowerLeft), getLatLngString(upperRight));
+        allResourcesCall.enqueue(new Callback<List<BeanResource>>() {
             @Override
-            public void onResponse(Call<List<BeanApiResource>> call, Response<List<BeanApiResource>> response) {
+            public void onResponse(Call<List<BeanResource>> call, Response<List<BeanResource>> response) {
                 if (response.isSuccessful()) {
-                    List<BeanApiResource> beanResources = response.body();
+                    List<BeanResource> beanResources = response.body();
                     if (beanResources != null && !beanResources.isEmpty()) {
-                        listener.onFetchingAllDataSuccess(beanResources);
+                        listener.onFetchingAllResourcesSuccess(beanResources);
                     } else {
                         listener.onFetchingDataError("No available data from server");
                     }
@@ -40,15 +44,16 @@ public class MapsInteractor {
             }
 
             @Override
-            public void onFailure(Call<List<BeanApiResource>> call, Throwable t) {
+            public void onFailure(Call<List<BeanResource>> call, Throwable t) {
                 listener.onFetchingDataError(t.getLocalizedMessage());
             }
         });
     }
 
     public void onDestroy() {
-        if (resourcesCall != null) {
-            resourcesCall.cancel();
+        if (allResourcesCall != null) {
+            allResourcesCall.cancel();
         }
     }
+
 }

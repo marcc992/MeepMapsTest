@@ -4,15 +4,14 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.ClusterManager;
 
 import java.util.List;
 
-import es.marcmauri.meepmaptest.model.beans.BeanApiResource;
+import es.marcmauri.meepmaptest.model.beans.BeanResource;
 import es.marcmauri.meepmaptest.model.beans.BeanResourceMarker;
 
-public class MapsPresenter {
+public class MapsPresenter implements MapsInteractor.OnMapListener {
 
     private MapsView mapsView;
     private GoogleMap mMap;
@@ -55,50 +54,63 @@ public class MapsPresenter {
     }
 
     public void showAllMarkers() {
-        mapsInteractor.getAllServerData(new MapsInteractor.OnMapListener() {
-            @Override
-            public void onFetchingDataError(String error) {
-                onErrorReceived(error);
-            }
+        if (mapsView != null) {
+            mapsView.showProgress();
+        }
 
-            @Override
-            public void onFetchingAllDataSuccess(List<BeanApiResource> resourceList) {
-                onAllMarkersReceived(resourceList);
-            }
-        });
-    }
-
-    public void onDestroy() {
-        mapsView = null;
-        mapsInteractor.onDestroy();
-    }
-
-    private void onAllMarkersReceived(List<BeanApiResource> resourceList) {
-        if (mMap != null) {
-
-            // Clear items in the current Cluster before update it with new data
+        if (mClusterManager != null) {
             mClusterManager.clearItems();
+            mClusterManager.cluster();
+        }
 
-            for (BeanApiResource resource : resourceList) {
-                BeanResourceMarker marker = new BeanResourceMarker(
-                        resource.getId(),
-                        resource.getY(), resource.getX(),
-                        resource.getName(),
-                        "Some mock description",
-                        resource.getCompanyZoneId());
+        mapsInteractor.getAllServerData(
+                "lisboa",new LatLng(38.711046,-9.160096),
+                new LatLng(38.739429,-9.137115),this);
+    }
 
-                mClusterManager.addItem(marker);
+
+    @Override
+    public void onFetchingDataError(String error) {
+        mapsView.showError(error);
+    }
+
+    @Override
+    public void onFetchingAllResourcesSuccess(List<BeanResource> resourceList) {
+        if (mapsView != null) {
+
+            // todo: pasar este if a la vista (Activity)
+            if (mMap != null) {
+
+                // Clear items in the current Cluster before update it with new data
+                mClusterManager.clearItems();
+
+                for (BeanResource resource : resourceList) {
+                    BeanResourceMarker marker = new BeanResourceMarker(
+                            resource.getId(),
+                            resource.getY(), resource.getX(),
+                            resource.getName(),
+                            "This could be any server resource...",
+                            resource.getCompanyZoneId());
+
+                    mClusterManager.addItem(marker);
+                }
+
+                // Refresh the markers on the map
+                mClusterManager.cluster();
+            } else {
+                mapsView.showError("Google Map has not been initialized yet!");
             }
 
-            // Refresh the markers on the map
-            mClusterManager.cluster();
-        } else {
-            mapsView.showError("Google Map has not been initialized yet!");
+            mapsView.hideProgress();
         }
     }
 
-    private void onErrorReceived(String error) {
-        mapsView.showError(error);
+
+    public void onDestroy() {
+        mMap = null;
+        mClusterManager = null;
+        mapsView = null;
+        mapsInteractor.onDestroy();
     }
 
 }
