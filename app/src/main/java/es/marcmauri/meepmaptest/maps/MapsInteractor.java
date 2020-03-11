@@ -26,7 +26,7 @@ public class MapsInteractor {
         return String.valueOf(location.latitude) + ',' + location.longitude;
     }
 
-    public void getAllServerData(String city, LatLng lowerLeft, LatLng upperRight, final OnMapListener listener) {
+    public void getAllResourcesData(String city, LatLng lowerLeft, LatLng upperRight, final OnMapListener listener) {
         allResourcesCall = service.getAllResourcesByCity(city, getLatLngString(lowerLeft), getLatLngString(upperRight));
         allResourcesCall.enqueue(new Callback<List<BeanResource>>() {
             @Override

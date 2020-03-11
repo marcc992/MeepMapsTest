@@ -6,10 +6,15 @@ import android.widget.Toast;
 
 import androidx.fragment.app.FragmentActivity;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.ClusterManager;
+
+import java.util.List;
 
 import es.marcmauri.meepmaptest.R;
 import es.marcmauri.meepmaptest.databinding.ActivityMapsBinding;
@@ -39,7 +44,7 @@ public class MapsActivity extends FragmentActivity implements MapsView, OnMapRea
         }
 
         presenter = new MapsPresenter(this, new MapsInteractor());
-        binding.fabRefreshData.setOnClickListener(v -> showAllMarkers());
+        binding.fabRefreshData.setOnClickListener(v -> presenter.showAllServices());
     }
 
     @Override
@@ -48,25 +53,12 @@ public class MapsActivity extends FragmentActivity implements MapsView, OnMapRea
         super.onDestroy();
     }
 
-
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        // Initialize the manager with the context and the map.
-        mClusterManager = new ClusterManager<>(this, mMap);
-        presenter.configureGoogleMap(mMap, mClusterManager);
-
-        // Technical test: Main behavior
-        showAllMarkers();
+        // When the map is ready, we configure the map and its properties like the camera and the cluster manager
+        configureGoogleMap(googleMap);
+        // Then we try to show all services fetched from server
+        presenter.showAllServices();
     }
 
     @Override
@@ -84,12 +76,45 @@ public class MapsActivity extends FragmentActivity implements MapsView, OnMapRea
         Toast.makeText(this, error, Toast.LENGTH_LONG).show();
     }
 
-    private void toast(String text) {
-        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+    @Override
+    public void showAllMarkers(List<BeanResourceMarker> markers) {
+        if (mMap != null) {
+            // Clear items in the current Cluster before update it with new data
+            mClusterManager.clearItems();
+            // Add the new items to the Cluster Manager
+            mClusterManager.addItems(markers);
+            // Refresh the markers on the map
+            mClusterManager.cluster();
+        } else {
+            showError("Google Map has not been initialized yet!");
+        }
     }
 
-    private void showAllMarkers() {
-        //TODO: Rellenar esto
-        presenter.showAllMarkers();
+    private void configureGoogleMap(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        // Initialize the manager with the context and the map.
+        mClusterManager = new ClusterManager<>(this, mMap);
+
+        // The city of this test is Lisbon
+        LatLng lisbon = new LatLng(	38.736946, 	-9.142685);
+
+        // Configure the GoogleMap Camera
+        CameraPosition camera = new CameraPosition.Builder()
+                .target(lisbon)
+                .zoom(13)           // limit -> 21
+                .bearing(0)         // 0 - 360 degrees
+                .tilt(45)           // 0 - 90 degree
+                .build();
+
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(camera));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(lisbon));
+        mMap.setMinZoomPreference(13);      // 10 => City view, 15 => Street view
+        mMap.setBuildingsEnabled(false);    // To increase the performance
+
+        // Point the map's listeners at the listeners implemented by the cluster manager.
+        mMap.setOnCameraIdleListener(mClusterManager);
+        mMap.setOnMarkerClickListener(mClusterManager);
     }
+
 }

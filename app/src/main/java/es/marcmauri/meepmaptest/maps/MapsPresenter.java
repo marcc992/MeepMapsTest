@@ -1,21 +1,26 @@
 package es.marcmauri.meepmaptest.maps;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.maps.android.clustering.ClusterManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import es.marcmauri.meepmaptest.model.beans.BeanResource;
 import es.marcmauri.meepmaptest.model.beans.BeanResourceMarker;
 
+import static es.marcmauri.meepmaptest.model.common.ResourceTypes.BIKE;
+import static es.marcmauri.meepmaptest.model.common.ResourceTypes.BUS_ONE;
+import static es.marcmauri.meepmaptest.model.common.ResourceTypes.BUS_THREE;
+import static es.marcmauri.meepmaptest.model.common.ResourceTypes.BUS_TWO;
+import static es.marcmauri.meepmaptest.model.common.ResourceTypes.ECOOLTRA;
+import static es.marcmauri.meepmaptest.model.common.ResourceTypes.EMOV;
+import static es.marcmauri.meepmaptest.model.common.ResourceTypes.TAXI;
+
 public class MapsPresenter implements MapsInteractor.OnMapListener {
 
     private MapsView mapsView;
-    private GoogleMap mMap;
-    private ClusterManager<BeanResourceMarker> mClusterManager;
     private MapsInteractor mapsInteractor;
 
     public MapsPresenter(MapsView mapsView, MapsInteractor mapsInteractor) {
@@ -23,49 +28,14 @@ public class MapsPresenter implements MapsInteractor.OnMapListener {
         this.mapsInteractor = mapsInteractor;
     }
 
-    public void configureGoogleMap(final GoogleMap map, final ClusterManager<BeanResourceMarker> clusterManager) {
-        if (map != null) {
-            mMap = map;
-            mClusterManager = clusterManager;
-
-            // The city of this test is Lisbon
-            LatLng lisbon = new LatLng(	38.736946, 	-9.142685);
-
-            // Configure the GoogleMap Camera
-            CameraPosition camera = new CameraPosition.Builder()
-                    .target(lisbon)
-                    .zoom(13)           // limit -> 21
-                    .bearing(0)         // 0 - 360 degrees
-                    .tilt(45)           // 0 - 90 degree
-                    .build();
-
-            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(camera));
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(lisbon));
-            mMap.setMinZoomPreference(13);      // 10 => City view
-            mMap.setBuildingsEnabled(false);    // To increase the performance
-
-            // Point the map's listeners at the listeners implemented by the cluster
-            // manager.
-            mMap.setOnCameraIdleListener(mClusterManager);
-            mMap.setOnMarkerClickListener(mClusterManager);
-        } else {
-            mapsView.showError("The Google Map object is wrong...");
-        }
-    }
-
-    public void showAllMarkers() {
+    public void showAllServices() {
         if (mapsView != null) {
             mapsView.showProgress();
         }
 
-        if (mClusterManager != null) {
-            mClusterManager.clearItems();
-            mClusterManager.cluster();
-        }
-
-        mapsInteractor.getAllServerData(
-                "lisboa",new LatLng(38.711046,-9.160096),
-                new LatLng(38.739429,-9.137115),this);
+        mapsInteractor.getAllResourcesData(
+                "lisboa", new LatLng(38.711046, -9.160096),
+                new LatLng(38.739429, -9.137115), this);
     }
 
 
@@ -77,29 +47,56 @@ public class MapsPresenter implements MapsInteractor.OnMapListener {
     @Override
     public void onFetchingAllResourcesSuccess(List<BeanResource> resourceList) {
         if (mapsView != null) {
+            // First, create a list of markers with the interested data from resources
+            List<BeanResourceMarker> actualMarkers = new ArrayList<>();
 
-            // todo: pasar este if a la vista (Activity)
-            if (mMap != null) {
-
-                // Clear items in the current Cluster before update it with new data
-                mClusterManager.clearItems();
-
-                for (BeanResource resource : resourceList) {
-                    BeanResourceMarker marker = new BeanResourceMarker(
-                            resource.getId(),
-                            resource.getY(), resource.getX(),
-                            resource.getName(),
-                            "This could be any server resource...",
-                            resource.getCompanyZoneId());
-
-                    mClusterManager.addItem(marker);
+            for (BeanResource resource : resourceList) {
+                String description;
+                BitmapDescriptor bitmapDescriptor;
+                switch (resource.getCompanyZoneId()) {
+                    case BIKE:
+                        description = "Bike service";
+                        bitmapDescriptor = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE);
+                        break;
+                    case BUS_ONE:
+                        description = "Bus A service";
+                        bitmapDescriptor = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
+                        break;
+                    case BUS_TWO:
+                        description = "Bus B service";
+                        bitmapDescriptor = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA);
+                        break;
+                    case BUS_THREE:
+                        description = "Bus C service";
+                        bitmapDescriptor = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE);
+                        break;
+                    case ECOOLTRA:
+                        description = "Ecooltra service";
+                        bitmapDescriptor = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE);
+                        break;
+                    case EMOV:
+                        description = "Emov service";
+                        bitmapDescriptor = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE);
+                        break;
+                    case TAXI:
+                        description = "Cab service";
+                        bitmapDescriptor = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW);
+                        break;
+                    default:
+                        description = "Unknown service";
+                        bitmapDescriptor = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
                 }
 
-                // Refresh the markers on the map
-                mClusterManager.cluster();
-            } else {
-                mapsView.showError("Google Map has not been initialized yet!");
+                actualMarkers.add(new BeanResourceMarker(
+                        resource.getId(),
+                        resource.getName(),
+                        description,
+                        new LatLng(resource.getY(), resource.getX()),
+                        bitmapDescriptor));
             }
+
+            // Finally, call the "painter" in the view
+            mapsView.showAllMarkers(actualMarkers);
 
             mapsView.hideProgress();
         }
@@ -107,8 +104,6 @@ public class MapsPresenter implements MapsInteractor.OnMapListener {
 
 
     public void onDestroy() {
-        mMap = null;
-        mClusterManager = null;
         mapsView = null;
         mapsInteractor.onDestroy();
     }

@@ -1,38 +1,35 @@
 package es.marcmauri.meepmaptest.model.beans;
 
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.ClusterItem;
 
 public class BeanResourceMarker implements ClusterItem {
 
     private final String id;
-    private final String name;
-    private final String description;
+    private final String title;
+    private final String snippet;
     private final LatLng position;
-    private final int companyZoneId;
+    private BitmapDescriptor markerDescriptor;
 
-    public BeanResourceMarker(String id, double lat, double lng, String name, String description, int companyZoneId) {
+    public BeanResourceMarker(String id, String title, String snippet, LatLng position, BitmapDescriptor markerDescriptor) {
         this.id = id;
-        position = new LatLng(lat, lng);
-        this.name = name;
-        this.description = description;
-        this.companyZoneId = companyZoneId;
+        this.title = title;
+        this.snippet = snippet;
+        this.position = position;
+        this.markerDescriptor = markerDescriptor;
     }
 
     public String getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public BitmapDescriptor getMarkerDescriptor() {
+        return markerDescriptor;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public int getCompanyZoneId() {
-        return companyZoneId;
+    public void setMarkerDescriptor(BitmapDescriptor markerDescriptor) {
+        this.markerDescriptor = markerDescriptor;
     }
 
     @Override
@@ -42,11 +39,11 @@ public class BeanResourceMarker implements ClusterItem {
 
     @Override
     public String getTitle() {
-        return name;
+        return title;
     }
 
     @Override
     public String getSnippet() {
-        return description;
+        return snippet;
     }
 }
