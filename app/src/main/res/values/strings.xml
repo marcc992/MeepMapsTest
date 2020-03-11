@@ -1,9 +1,28 @@
 <resources>
     <string name="app_name">MeepMapTest</string>
 
+    <!-- Welcome activity -->
     <string name="welcome_layout_text_welcome">Welcome to</string>
     <string name="welcome_layout_content_description_icon_transport">Illustrate icon in the Welcome Screen</string>
     <string name="welcome_layout_button_start">Start</string>
-    <string name="title_activity_maps">Map of services</string>
 
+    <!-- Maps activity -->
+    <string name="title_activity_maps">Map of services</string>
+    <string name="info_text_empty_data">No available data from server</string>
+
+    <!-- Error messages -->
+    <string name="error_text_maps_not_init_yet">Google Map has not been initialized yet!</string>
+    <string name="error_text_invalid_fragment">Error with mapFragment</string>
+    <string name="error_text_invalid_fetching_data_from_server">An error occurred fetching the server response</string>
+    <string name="error_text_with_colon">Error: </string>
+
+    <!-- Resource info -->
+    <string name="resource_info_service_bike">Bike service</string>
+    <string name="resource_info_service_bus_a">Bus A service</string>
+    <string name="resource_info_service_bus_b">Bus B service</string>
+    <string name="resource_info_service_bus_c">Bus C service</string>
+    <string name="resource_info_service_ecooltra">Ecooltra service</string>
+    <string name="resource_info_service_emov">Emov service</string>
+    <string name="resource_info_service_cab">Cab service</string>
+    <string name="resource_info_service_unknown">Bike service</string>
 </resources>

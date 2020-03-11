@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MeepMapTest</string>
+
+    <!-- Welcome activity -->
+    <string name="welcome_layout_text_welcome">Bienvenido a</string>
+    <string name="welcome_layout_content_description_icon_transport">Icono ilustrativo en la Pantalla de Bienvenida</string>
+    <string name="welcome_layout_button_start">Empezar</string>
+
+    <!-- Maps activity -->
+    <string name="title_activity_maps">Mapa de servicios</string>
+    <string name="info_text_empty_data">No hay datos disponibles</string>
+
+    <!-- Error messages -->
+    <string name="error_text_maps_not_init_yet">Google Map todaiva no se ha iniciado!</string>
+    <string name="error_text_invalid_fragment">Error con el mapFragment</string>
+    <string name="error_text_invalid_fetching_data_from_server">Ocurrió un error con el servidor</string>
+    <string name="error_text_with_colon">Error: </string>
+
+    <!-- Resource info -->
+    <string name="resource_info_service_bike">Servicio de Bici</string>
+    <string name="resource_info_service_bus_a">Servicio de Bus A</string>
+    <string name="resource_info_service_bus_b">Servicio de Bus B</string>
+    <string name="resource_info_service_bus_c">Servicio de Bus C</string>
+    <string name="resource_info_service_ecooltra">Servicio de Ecooltra</string>
+    <string name="resource_info_service_emov">Servicio de Emov</string>
+    <string name="resource_info_service_cab">Servicio de Taxi</string>
+    <string name="resource_info_service_unknown">Servicio desconocido</string>
+</resources>

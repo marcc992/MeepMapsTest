@@ -2,7 +2,7 @@ package es.marcmauri.meepmaptest.maps;
 
 import java.util.List;
 
-import es.marcmauri.meepmaptest.model.beans.BeanResourceMarker;
+import es.marcmauri.meepmaptest.model.markers.ResourceMarker;
 
 public interface MapsView {
     void showProgress();
@@ -11,7 +11,7 @@ public interface MapsView {
 
     void showError(String error);
 
-    void showAllMarkers(List<BeanResourceMarker> markers);
+    void showAllMarkers(List<ResourceMarker> markers);
 
     //void showAllMarkers();
 

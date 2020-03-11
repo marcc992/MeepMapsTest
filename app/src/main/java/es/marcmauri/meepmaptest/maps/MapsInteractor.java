@@ -19,6 +19,8 @@ public class MapsInteractor {
     interface OnMapListener {
         void onFetchingDataError(String error);
 
+        void onFetchingDataEmpty();
+
         void onFetchingAllResourcesSuccess(List<BeanResource> resourceList);
     }
 
@@ -36,10 +38,10 @@ public class MapsInteractor {
                     if (beanResources != null && !beanResources.isEmpty()) {
                         listener.onFetchingAllResourcesSuccess(beanResources);
                     } else {
-                        listener.onFetchingDataError("No available data from server");
+                        listener.onFetchingDataEmpty();
                     }
                 } else {
-                    listener.onFetchingDataError("Error: " + response.message());
+                    listener.onFetchingDataError(response.message());
                 }
             }
 

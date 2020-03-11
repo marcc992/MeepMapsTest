@@ -1,10 +1,10 @@
-package es.marcmauri.meepmaptest.model.beans;
+package es.marcmauri.meepmaptest.model.markers;
 
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.ClusterItem;
 
-public class BeanResourceMarker implements ClusterItem {
+public class ResourceMarker implements ClusterItem {
 
     private final String id;
     private final String title;
@@ -12,7 +12,7 @@ public class BeanResourceMarker implements ClusterItem {
     private final LatLng position;
     private BitmapDescriptor markerDescriptor;
 
-    public BeanResourceMarker(String id, String title, String snippet, LatLng position, BitmapDescriptor markerDescriptor) {
+    public ResourceMarker(String id, String title, String snippet, LatLng position, BitmapDescriptor markerDescriptor) {
         this.id = id;
         this.title = title;
         this.snippet = snippet;
